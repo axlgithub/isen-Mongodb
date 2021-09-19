@@ -1,4 +1,5 @@
 import requests
+import json
 from pprint import pprint  
 
 
@@ -45,15 +46,58 @@ def new_station(state,name,size):
     return new_station
 
 
-##############################################################################
+
+##Obtention du json contenant les stations de vélib de Lille
+def get_vlille():
+    url="https://opendata.lillemetropole.fr/api/records/1.0/search/?dataset=vlille-realtime&q=&rows=3000&facet=libelle&facet=nom&facet=commune&facet=&etat&facet=type&facet=etatconnexion"
+    response = requests.request("GET", url)
+    response_json = json.loads(response.text.encode('utf8'))
+    return response_json.get("records",[])
+
+####Obtention du json contenant les stations de vélib de Paris
+def get_vparis():
+    url="https://opendata.paris.fr/api/records/1.0/search/?dataset=velib-disponibilite-en-temps-reel&q=&rows=300&facet=name&facet=is_installed&facet=is_renting&facet=is_returning&facet=nom_arrondissement_communes"
+    response = requests.request("GET", url)
+    response_json = json.loads(response.text.encode('utf8'))
+    return response_json.get("records",[])
+
+## Création de la db pour lille
+def db_create_lille():
+    vlille_list= get_vlille()
+    dbname=get_database("vélib")
+    collection_name=dbname["Lille"]
+    for k in range(len(vlille_list)):
+        collection_name.insert_one(vlille_list[k])
+    return()
+
+##Création de la db pour Paris  
+def db_create_paris():
+    vparis_list=get_vparis()
+    dbname=get_database("vélib")
+    collection_name=dbname["Paris"]
+    for k in range(len(vparis_list)):
+        collection_name.insert_one(vparis_list[k])
+    return()
 
 
+    
+if __name__ == "__main__": 
+    db_create_lille()
+    db_create_paris()
 
 
-if __name__ == "__main__":  
-    station = new_station("En service", "rue macena", 10)
-    # Get the database
+"""
+    vlille_list= get_vlille()
+    dbname=get_database("vlille")
+    collection_name=dbname["station"]
+    for k in range(len(vlille_list)):
+        collection_name.insert_one(vlille_list[k])
+    
+    
+     
+    station = new_station("En service", "rue mace", 10)
     dbname = get_database("test")
     print(dbname)
     collection_name= dbname["station"]
     collection_name.insert_one(station)
+    """
