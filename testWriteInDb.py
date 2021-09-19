@@ -39,22 +39,19 @@ def get_database(name_of_data_base):
 
 def new_station(state,name,size):
     new_station = {
-        {
         "state": state,
         "name": name,
         "size": size}  
-    }
+    return new_station
 
 
-
-
-
+##############################################################################
 
 
 
 
 if __name__ == "__main__":  
-    station = new_station("En service", "rue nationale", 10)
+    station = new_station("En service", "rue macena", 10)
     # Get the database
     dbname = get_database("test")
     print(dbname)
