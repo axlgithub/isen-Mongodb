@@ -88,9 +88,9 @@ def get_closest_location(city, location_of_user):
 
 
 if __name__ == "__main__": 
-    testWriteInDb.get_database("vélib")
+    db =testWriteInDb.get_database("vélib")
     city_of_user = first_launch_from_user()
-
+    collection=db[city_of_user]
    
     os.system("clear")
     print("\n\n\n############################################\n\n\nWelcome to our bike programm for the city of",city_of_user)
