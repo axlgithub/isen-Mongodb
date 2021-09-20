@@ -12,13 +12,13 @@ import os
 
 def choice(i):
     user_choice = i
-    if (int(user_choice) == 1):
+    if (user_choice == "1"):
         return ("paris")
-    if (int(user_choice) == 2):
+    if (user_choice == "2"):
         return ("lille")
-    if (int(user_choice) == 3):
+    if (user_choice == "3"):
         return ("lyon")
-    if (int(user_choice) == 4):
+    if (user_choice == "4"):
         return ("rennes")
     user_choice = user_choice.lower()
     return(user_choice)
@@ -65,7 +65,9 @@ def get_user_location():
     L = []
     user_longitude = input("\nplease enter your longitude: ")
     user_latitude = input("\nplease enter your latitude: ")
-    return L[user_longitude,user_latitude]
+    L.append(user_latitude)
+    L.append(user_longitude)
+    return L
 
 #############################################################################
 
@@ -79,8 +81,13 @@ def get_user_location():
 
 #############################################################################
 
-def get_closest_location(city, location_of_user):
-    return 1
+def get_closest_location(collection, location_of_user):
+    for x in collection.find({},{ "nom": "RUE ROYALE "}):
+        result=x
+        print(x) 
+    return (x)
+    
+    
 
 #############################################################################
 
@@ -90,13 +97,13 @@ def get_closest_location(city, location_of_user):
 if __name__ == "__main__": 
     db =testWriteInDb.get_database("vélib")
     city_of_user = first_launch_from_user()
-    collection=db[city_of_user]
+    collection= db[city_of_user]
    
     os.system("clear")
-    print("\n\n\n############################################\n\n\nWelcome to our bike programm for the city of",city_of_user)
+    print("############################################\n\n\nWelcome to our bike programm for the city of",city_of_user)
 
     # user location is stored as a list [longitude, latitude]
     user_localisation = get_user_location()
 
     print("the closest station is: ")
-    closest_location = get_closest_location(city_of_user, user_localisation)
+    closest_location = get_closest_location(collection, user_localisation)
