@@ -65,7 +65,30 @@ def get_vlille():
 
 #######################################################################
 
+######################################################################
 
+##    Obtention du json contenant les stations de vélib de Lyon  ####
+
+######################################################################
+
+def get_vlyon():
+    url="https://transport.data.gouv.fr/gbfs/lyon/gbfs.json"
+    response = requests.request("GET", url)
+    response_json = json.loads(response.text.encode('utf8'))
+    return response_json.get("records",[])
+
+######################################################################
+
+
+##    Obtention du json contenant les stations de vélib de Rennes  ####
+
+######################################################################
+
+def get_vrennes():
+    url="https://data.rennesmetropole.fr/api/records/1.0/search/?dataset=etat-des-stations-le-velo-star-en-temps-reel&q=&rows=300&facet=nom&facet=etat&facet=nombreemplacementsactuels&facet=nombreemplacementsdisponibles&facet=nombrevelosdisponibles"
+    response = requests.request("GET", url)
+    response_json = json.loads(response.text.encode('utf8'))
+    return response_json.get("records",[])
 
 
 #######################################################################
@@ -102,7 +125,32 @@ def db_create_lille():
 
 #########################################################################
 
+#########################################################################
 
+#####"               Création de la db pour Rennes                ########
+
+#########################################################################
+def db_create_rennes():
+    vrennes_list=get_vrennes()
+    dbname=get_database("vélib")
+    collection_name=dbname["Rennes"]
+    for k in range(len(vrennes_list)):
+        collection_name.insert_one(vrennes_list[k])
+    return()
+
+
+#########################################################################
+
+#####"               Création de la db pour Lyon                ########
+
+#########################################################################
+def db_create_lyon():
+    vlyon_list=get_vlyon()
+    dbname=get_database("vélib")
+    collection_name=dbname["Lyon"]
+    for k in range(len(vlyon_list)):
+        collection_name.insert_one(vlyon_list[k])
+    return()
 
 
 #########################################################################
@@ -123,8 +171,7 @@ def db_create_paris():
 
     
 if __name__ == "__main__": 
-    db_create_lille()
-    db_create_paris()
+    db_create_lyon()
 
 
 """
