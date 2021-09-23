@@ -18,6 +18,7 @@ import user_program
 
 
 def capture_and_update_data_of_city(city):
+    user_program.update(city)
     print("ok")
 
     
@@ -43,7 +44,7 @@ def timed_worker(time_in_seconds,city):
     initial_time=time.time()
     while (t<time_in_seconds):
         one_minute_chrono = time.time()
-        capture_and_update_data_of_city("Lille")
+        capture_and_update_data_of_city(city)
         time.sleep(60.0 - ((time.time() - one_minute_chrono) % 60.0))
         t=time.time()-initial_time
         print(time_in_seconds-t," seconds to go")
