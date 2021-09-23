@@ -1,3 +1,4 @@
+from Station import Station
 import requests
 import json
 from pprint import pprint  
@@ -26,26 +27,6 @@ def get_database(name_of_data_base):
     #return the database asked in parameter
     return client[name_of_data_base]
 
-#################################
-
-
-
-#############################################################################
-
-###        new_station                                                 ######
-
-#############################################################################
-
-def new_station(state,name,size):
-    new_station = {
-        "state": state,
-        "name": name,
-        "size": size}  
-    return new_station
-
-
-
-##############################################################################
 
 
 
@@ -72,10 +53,10 @@ def get_vlille():
 ######################################################################
 
 def get_vlyon():
-    url="https://transport.data.gouv.fr/gbfs/lyon/gbfs.json"
+    url="http://api.citybik.es/v2/networks/velov"
     response = requests.request("GET", url)
     response_json = json.loads(response.text.encode('utf8'))
-    return response_json.get("records",[])
+    return response_json.get("stations",[])
 
 ######################################################################
 
@@ -119,9 +100,17 @@ def db_create_lille():
     vlille_list= get_vlille()
     dbname=get_database("vélib")
     collection_name=dbname["Lille"]
-    for k in range(len(vlille_list)):
-        collection_name.insert_one(vlille_list[k])
+    for x in vlille_list:
+        collection_name.insert_one(Station(x["recordid"],
+        x["fields"]["etat"],
+        x["fields"]["nbvelosdispo"],
+        x["fields"]["nbplacesdispo"],
+        x["fields"]["nom"],
+        x["fields"]["localisation"][0],
+        x["fields"]["localisation"][1]).__dict__
+        )
     return()
+
 
 #########################################################################
 
@@ -134,9 +123,17 @@ def db_create_rennes():
     vrennes_list=get_vrennes()
     dbname=get_database("vélib")
     collection_name=dbname["Rennes"]
-    for k in range(len(vrennes_list)):
-        collection_name.insert_one(vrennes_list[k])
+    for x in vrennes_list:
+        collection_name.insert_one(Station(x["recordid"],
+        x["fields"]["etat"],
+        x["fields"]["nombreemplacementsdisponibles"],
+        x["fields"]["nombreemplacementsactuels"],
+        x["fields"]["nom"],
+        x["fields"]["coordonnees"][0],
+        x["fields"]["coordonnees"][1]).__dict__
+        )
     return()
+            
 
 
 #########################################################################
@@ -148,9 +145,7 @@ def db_create_lyon():
     vlyon_list=get_vlyon()
     dbname=get_database("vélib")
     collection_name=dbname["Lyon"]
-    for k in range(len(vlyon_list)):
-        collection_name.insert_one(vlyon_list[k])
-    return()
+    print(vlyon_list)
 
 
 #########################################################################
@@ -162,8 +157,15 @@ def db_create_paris():
     vparis_list=get_vparis()
     dbname=get_database("vélib")
     collection_name=dbname["Paris"]
-    for k in range(len(vparis_list)):
-        collection_name.insert_one(vparis_list[k])
+    for x in vparis_list:
+        collection_name.insert_one(Station(x["recordid"],
+        x["fields"]["is_renting"],
+        x["fields"]["numdocksavailable"],
+        x["fields"]["numbikesavailable"],
+        x["fields"]["name"],
+        x["fields"]["coordonnees_geo"][0],
+        x["fields"]["coordonnees_geo"][1]).__dict__
+        )
     return()
 
 #########################################################################
@@ -171,10 +173,12 @@ def db_create_paris():
 
     
 if __name__ == "__main__": 
-    db_create_lyon()
-
+    db_create_paris()
 
 """
+dbname=get_database("vélib")
+    collection=dbname["Lille"]
+    collection.drop()
     vlille_list= get_vlille()
     dbname=get_database("vlille")
     collection_name=dbname["station"]
