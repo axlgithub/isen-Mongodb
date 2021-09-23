@@ -1,5 +1,8 @@
 import testWriteInDb
 import os 
+from bson.son import SON
+from pymongo import MongoClient
+
 
 
 
@@ -36,7 +39,6 @@ def choice(i):
 #############################################################################
 
 def first_launch_from_user():
-    print("Hello, welcome to our velib application. In which city do you want to make a research ? \n")
     while True:
         print("enter the name of the city or one of the number shown bellow\n ")
         print("1.Paris 2.Lille 3.Lyon 4;Rennes\n")
@@ -62,12 +64,12 @@ def first_launch_from_user():
 #############################################################################
 
 def get_user_location():
-    L = []
-    user_longitude = input("\nplease enter your longitude: ")
-    user_latitude = input("\nplease enter your latitude: ")
-    L.append(user_latitude)
-    L.append(user_longitude)
-    return L
+    tab = 2*[0]
+    user_longitude = float(input("\nplease enter your longitude: "))
+    user_latitude = float(input("\nplease enter your latitude: "))
+    tab[0]=user_longitude
+    tab[1]=user_latitude
+    return tab
 
 #############################################################################
 
@@ -82,10 +84,35 @@ def get_user_location():
 #############################################################################
 
 def get_closest_location(collection, location_of_user):
+    """
+    collection.create_index([('geometry.coordinates', '2dsphere')])
+    closest_station = ( collection.find_one({
+    "location": {
+        "$nearSphere": {
+            "$geometry": {
+                "type": "Point",
+                "coordinates": location_of_user
+            },
+            "$maxDistance": 10000000000000000
+        }
+    }
+}))
+"""
+    max_distance= 10000000000
+    query = {
+    "geolocations": SON([("$near", [location_of_user[1], location_of_user[0]]), ("$maxDistance", 0.01)])
+}
+    for doc in collection.find(query):
+        print(doc)
+    return 1
+
+"""
     for x in collection.find({},{ "nom": "RUE ROYALE "}):
         result=x
         print(x) 
     return (x)
+"""
+
     
     
 
@@ -96,13 +123,14 @@ def get_closest_location(collection, location_of_user):
 
 if __name__ == "__main__": 
     db =testWriteInDb.get_database("vélib")
+    print("Hello, welcome to our velib application. In which city do you want to make a research ? \n")
     city_of_user = first_launch_from_user()
     collection= db[city_of_user]
    
     os.system("clear")
     print("############################################\n\n\nWelcome to our bike programm for the city of",city_of_user)
 
-    # user location is stored as a list [longitude, latitude]
+    # user location is stored as a tab [longitude, latitude]
     user_localisation = get_user_location()
 
     print("the closest station is: ")
