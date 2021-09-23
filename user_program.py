@@ -39,7 +39,6 @@ def choice(i):
 #############################################################################
 
 def first_launch_from_user():
-    print("Hello, welcome to our velib application. In which city do you want to make a research ? \n")
     while True:
         print("enter the name of the city or one of the number shown bellow\n ")
         print("1.Paris 2.Lille 3.Lyon 4;Rennes\n")
@@ -124,6 +123,7 @@ def get_closest_location(collection, location_of_user):
 
 if __name__ == "__main__": 
     db =testWriteInDb.get_database("vélib")
+    print("Hello, welcome to our velib application. In which city do you want to make a research ? \n")
     city_of_user = first_launch_from_user()
     collection= db[city_of_user]
    
