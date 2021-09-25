@@ -172,6 +172,8 @@ def db_create_paris():
 
 
 
+
+
 #############################################################################
 
 ###        update                                                      ######
@@ -180,14 +182,47 @@ def db_create_paris():
 
 def update(city):
     if city == "Paris":
-        get_vparis()
+        new_data = get_vparis()
+        dbname=get_database("vélib")
+        collection = dbname["Paris"]
+        for x in new_data:
+            name_of_the_station = x["fields"]["name"]
+            number_of_available_places = x["fields"]["numdocksavailable"]
+            number_of_bikes_availables = x["fields"]["numbikesavailable"]
+            new_values1 = {"$set": {'places_dispo': number_of_available_places}}
+            new_values2 = {"$set": {'velo_dispo': number_of_bikes_availables}}
+            print(name_of_the_station)
+            collection.update_one({'nom': name_of_the_station}, new_values1)
+            collection.update_one({'nom': name_of_the_station}, new_values2)
     if city == "Lille":
-        get_vlille()
+        new_data = get_vlille()
+        dbname=get_database("vélib")
+        collection = dbname["Lille"]
+        for x in new_data:
+            name_of_the_station = x["fields"]["nom"]
+            number_of_available_places = x["fields"]["nbplacesdispo"]
+            number_of_bikes_availables = x["fields"]["nbvelosdispo"]
+            new_values1 = {"$set": {'places_dispo': number_of_available_places}}
+            new_values2 = {"$set": {'velo_dispo': number_of_bikes_availables}}
+            print(name_of_the_station)
+            collection.update_one({'nom': name_of_the_station}, new_values1)
+            collection.update_one({'nom': name_of_the_station}, new_values2)
     if city == "Lyon":
-        get_vlyon()
+        print("not available for this city for the moment")
     if city == "Rennes":
-        get_vrennes()
-
+        new_data = get_vrennes()
+        dbname=get_database("vélib")
+        collection = dbname["Rennes"]
+        for x in new_data:
+            name_of_the_station = x["fields"]["nom"]
+            number_of_available_places = x["fields"]["nombreemplacementsdisponibles"]
+            number_of_bikes_availables = x["fields"]["nombreemplacementsactuels"]
+            new_values1 = {"$set": {'places_dispo': number_of_available_places}}
+            new_values2 = {"$set": {'velo_dispo': number_of_bikes_availables}}
+            print(name_of_the_station)
+            collection.update_one({'nom': name_of_the_station}, new_values1)
+            collection.update_one({'nom': name_of_the_station}, new_values2)
+         
 
 
 ##############################################################################
