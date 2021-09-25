@@ -2,7 +2,6 @@ import testWriteInDb
 import os 
 from bson.son import SON
 from pymongo import MongoClient
-import sched
 import time
 import testWriteInDb
 import user_program
@@ -19,6 +18,7 @@ import user_program
 
 
 def capture_and_update_data_of_city(city):
+    testWriteInDb.capture(city)
     testWriteInDb.update(city)
     print("ok")
 
@@ -43,6 +43,7 @@ def capture_and_update_data_of_city(city):
 def timed_worker(time_in_seconds,city):
     t=0
     initial_time=time.time()
+    testWriteInDb.clear("capture")
     while (t<time_in_seconds):
         one_minute_chrono = time.time()
         capture_and_update_data_of_city(city)

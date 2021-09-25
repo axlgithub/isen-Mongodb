@@ -2,7 +2,7 @@ from Station import Station
 import requests
 import json
 from pprint import pprint  
-
+import time
 
 #############################################################################
 
@@ -227,6 +227,90 @@ def update(city):
 
 ##############################################################################
 
+
+#############################################################################
+
+###        capture                                                     ######
+
+#############################################################################
+
+def capture(city):
+    if city == "Paris":
+        new_data = get_vparis()
+        dbname=get_database("vélib")
+        collection = dbname["capture"]
+        for x in new_data:
+            i=int(time.time())
+            collection.insert_one(Station(x["recordid"]+str(i),
+            x["fields"]["is_renting"],
+            x["fields"]["numdocksavailable"],
+            x["fields"]["numbikesavailable"],
+            x["fields"]["name"],
+            x["fields"]["coordonnees_geo"][0],
+            x["fields"]["coordonnees_geo"][1]).__dict__
+        )
+           
+            
+    if city == "Lille":
+        new_data = get_vlille()
+        dbname=get_database("vélib")
+        collection = dbname["capture"]
+        for x in new_data:
+            i=int(time.time())
+            collection.insert_one(Station(x["recordid"]+str(i),
+            x["fields"]["etat"],
+            x["fields"]["nbvelosdispo"],
+            x["fields"]["nbplacesdispo"],
+            x["fields"]["nom"],
+            x["fields"]["localisation"][0],
+            x["fields"]["localisation"][1]).__dict__
+        )
+            
+            
+    if city == "Lyon":
+        print("not available for this city for the moment")
+
+    if city == "Rennes":
+        new_data = get_vrennes()
+        dbname=get_database("vélib")
+        collection = dbname["capture"]
+        for x in new_data:
+            i=int(time.time())
+            collection.insert_one(Station(x["recordid"]+str(i),
+            x["fields"]["etat"],
+            x["fields"]["nombreemplacementsdisponibles"],
+            x["fields"]["nombreemplacementsactuels"],
+            x["fields"]["nom"],
+            x["fields"]["coordonnees"][0],
+            x["fields"]["coordonnees"][1]).__dict__
+        )
+           
+         
+
+
+##############################################################################
+
+
+
+
+
+
+#############################################################################
+
+###        clear                                                       ######
+
+#############################################################################
+
+def clear(collection_name):
+    dbname=get_database("vélib")
+    collection = dbname[collection_name]
+    collection.drop()
+    
+           
+         
+
+
+##############################################################################
 
 
 
