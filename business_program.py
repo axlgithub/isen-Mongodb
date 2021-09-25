@@ -15,12 +15,11 @@ def find_station(city):
     collection= db[city]
     string_to_search=input("\nplease entre the name or partial name you want to search: ")
     string_to_search= string_to_search.upper()
-    a= collection.find( {'nom': "BOULEVARD DE VALMY"} )
+    collection.create_index([('nom',"text")])
+    a= collection.find({'$text':{'$search': string_to_search}} )
     for data in a:
         print(data)
-    print(a)
-    print("okok")
-    return("to_do")
+    return(a)
 
 
 ######################################################################

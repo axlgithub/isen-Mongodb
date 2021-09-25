@@ -2,6 +2,7 @@ import testWriteInDb
 import os 
 from bson.son import SON
 from pymongo import MongoClient
+from pprint import pprint 
 
 
 
@@ -84,34 +85,16 @@ def get_user_location():
 #############################################################################
 
 def get_closest_location(collection, location_of_user):
-    """
-    collection.create_index([('geometry.coordinates', '2dsphere')])
-    closest_station = ( collection.find_one({
-    "location": {
-        "$nearSphere": {
-            "$geometry": {
-                "type": "Point",
-                "coordinates": location_of_user
-            },
-            "$maxDistance": 10000000000000000
-        }
-    }
-}))
-"""
-    max_distance= 10000000000
-    query = {
-    "geolocations": SON([("$near", [location_of_user[1], location_of_user[0]]), ("$maxDistance", 0.01)])
-}
-    for doc in collection.find(query):
-        print(doc)
-    return 1
-
-"""
-    for x in collection.find({},{ "nom": "RUE ROYALE "}):
-        result=x
-        print(x) 
-    return (x)
-"""
+    max_distance= 0.01
+    collection.create_index([('coordonnees',"2d")])
+    a = collection.find_one(
+        {'coordonnees': {'$near': location_of_user, '$maxDistance': max_distance }}
+    ) 
+    name_of_closest_station = a['nom']
+    number_of_available_bikes=a['velos_dispo']
+    number_of_free_places=a['places_dispo']
+    print('La station la plus proches est '+name_of_closest_station+'. Il reste '+str(number_of_available_bikes)+' velos de disponibles et '+str(number_of_free_places)+' places de libres')
+    return(0)
 
     
     
@@ -132,6 +115,4 @@ if __name__ == "__main__":
 
     # user location is stored as a tab [longitude, latitude]
     user_localisation = get_user_location()
-
-    print("the closest station is: ")
     closest_location = get_closest_location(collection, user_localisation)
