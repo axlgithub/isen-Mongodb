@@ -1,35 +1,71 @@
 from Station import Station
-from pprint import pprint  
+import user_program 
+import os
 
 
 #############################################################################
 
-###        get_database, from https://www.mongodb.com/languages/python ######
+###        find and display a station                                  ######
 
 #############################################################################
 
-def get_database(name_of_data_base):
-    from pymongo import MongoClient
-    import pymongo
-
-    #Get the password and the username in a file next to this python script 
-    pwd_file = open('test2','r')
-    pwd=(pwd_file.readline()).strip("\n")
-    username=(pwd_file.readline()).strip("\n")
-    pwd_file.close()
-
-    #Fabrication of the connection string used to connect ourselves with our password and login to the database
-    CONNECTION_STRING = "mongodb+srv://"+username+":"+pwd+"@cluster0.dragk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-    client = MongoClient(CONNECTION_STRING)
-
-    #return the database asked in parameter
-    return client[name_of_data_base]
+def find_station(name):
+    return("to_do")
 
 
+######################################################################
 
+#############################################################################
+
+###        update_station                                              ######
+
+#############################################################################
+
+def update_station(name):
+    return("to_do")
+
+
+######################################################################
+
+#############################################################################
+
+###      desactivate_all_stations_in_area                              ######
+
+#############################################################################
+
+def desactivate_all_stations_in_area(name):
+    return("to_do")
+
+
+######################################################################
+
+#############################################################################
+
+###        find and display a station                                  ######
+
+#############################################################################
+
+def stations_ratio_bike(name):
+    return("to_do")
 
 
 ######################################################################
 
 if __name__ == "__main__":
-    print("c'est cool")  
+    print("Hello, welcome to our Business program.\n")  
+    city = user_program.first_launch_from_user()
+    os.system("clear")
+    print("Welcome to our worker program for the city of",city)
+    print("\nWhich action do you want to do ?\n")
+    print("\nEnter 1. Find a station from its name\n 2. Update a station\n 3. Desactivate all the sations in an area\n4. Give all sations with ratio bike under 20%\n")
+    user_choice = input("your choice: ")
+    if user_choice ==1:
+        find_station()
+    if user_choice ==2:
+        update_station()
+    if user_choice ==3:
+        desactivate_all_stations_in_area()
+    if user_choice ==4:
+        stations_ratio_bike()
+    
+    
