@@ -1,6 +1,7 @@
 from Station import Station
 import user_program 
 import os
+import testWriteInDb
 
 
 #############################################################################
@@ -9,7 +10,18 @@ import os
 
 #############################################################################
 
-def find_station(name):
+def find_station(city):
+    db =testWriteInDb.get_database("vélib")
+    collection= db[city]
+    string_to_search=input("\nplease entre the name or partial name you want to search: ")
+    string_to_search= string_to_search.upper()
+    a= collection.find( { "$text" : { "$search" : "VALMY", 
+                          "$caseSensitive": False, 
+                          "$diacriticSensitive": False }} )
+    for data in a:
+        print(data)
+    print(a)
+    print("okok")
     return("to_do")
 
 
@@ -59,13 +71,13 @@ if __name__ == "__main__":
     print("\nWhich action do you want to do ?\n")
     print("\nEnter 1. Find a station from its name\n 2. Update a station\n 3. Desactivate all the sations in an area\n4. Give all sations with ratio bike under 20%\n")
     user_choice = input("your choice: ")
-    if user_choice ==1:
-        find_station()
-    if user_choice ==2:
+    if user_choice =="1":
+        find_station(city)
+    if user_choice =="2":
         update_station()
-    if user_choice ==3:
+    if user_choice =="3":
         desactivate_all_stations_in_area()
-    if user_choice ==4:
+    if user_choice =="4":
         stations_ratio_bike()
     
     
