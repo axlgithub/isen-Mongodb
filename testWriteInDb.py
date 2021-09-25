@@ -189,11 +189,14 @@ def update(city):
             name_of_the_station = x["fields"]["name"]
             number_of_available_places = x["fields"]["numdocksavailable"]
             number_of_bikes_availables = x["fields"]["numbikesavailable"]
+            etat=x["fields"]["is_renting"]
             new_values1 = {"$set": {'places_dispo': number_of_available_places}}
-            new_values2 = {"$set": {'velo_dispo': number_of_bikes_availables}}
+            new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
+            new_values3 = {"$set": {'etat': etat}}
             print(name_of_the_station)
             collection.update_one({'nom': name_of_the_station}, new_values1)
             collection.update_one({'nom': name_of_the_station}, new_values2)
+            collection.update_one({'nom': name_of_the_station}, new_values3)
     if city == "Lille":
         new_data = get_vlille()
         dbname=get_database("vélib")
@@ -202,11 +205,14 @@ def update(city):
             name_of_the_station = x["fields"]["nom"]
             number_of_available_places = x["fields"]["nbplacesdispo"]
             number_of_bikes_availables = x["fields"]["nbvelosdispo"]
+            etat=x["fields"]["etat"]
             new_values1 = {"$set": {'places_dispo': number_of_available_places}}
-            new_values2 = {"$set": {'velo_dispo': number_of_bikes_availables}}
+            new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
+            new_values3={"$set": {'etat': etat}}
             print(name_of_the_station)
             collection.update_one({'nom': name_of_the_station}, new_values1)
             collection.update_one({'nom': name_of_the_station}, new_values2)
+            collection.update_one({'nom': name_of_the_station}, new_values3)
     if city == "Lyon":
         print("not available for this city for the moment")
     if city == "Rennes":
@@ -217,11 +223,14 @@ def update(city):
             name_of_the_station = x["fields"]["nom"]
             number_of_available_places = x["fields"]["nombreemplacementsdisponibles"]
             number_of_bikes_availables = x["fields"]["nombreemplacementsactuels"]
+            etat=x["fields"]["etat"]
             new_values1 = {"$set": {'places_dispo': number_of_available_places}}
-            new_values2 = {"$set": {'velo_dispo': number_of_bikes_availables}}
+            new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
+            new_values3={"$set": {'etat': etat}}
             print(name_of_the_station)
             collection.update_one({'nom': name_of_the_station}, new_values1)
             collection.update_one({'nom': name_of_the_station}, new_values2)
+            collection.update_one({'nom': name_of_the_station}, new_values3)
          
 
 
