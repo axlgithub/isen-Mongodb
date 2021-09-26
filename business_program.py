@@ -100,11 +100,42 @@ def delete_station(name,city):
 
 #############################################################################
 
-def desactivate_all_stations_in_area(name):
+def desactivate_all_stations_in_area(city):
+   
     return("to_do")
 
 
 ######################################################################
+
+
+
+
+
+#############################################################################
+
+###      average                                                       ######
+
+#############################################################################
+
+def average(a_list_of_stations):
+    new_list = []
+    for x in a_list_of_stations:
+        size=len(x)
+        addition=0
+        L = []
+        for i in range(1,size):
+            addition += x[i]
+        average = addition/(size-1)
+        L.append(x[0])
+        L.append(average)
+        new_list.append(L)
+    return(new_list)
+
+
+######################################################################
+
+
+
 
 #############################################################################
 
@@ -112,11 +143,40 @@ def desactivate_all_stations_in_area(name):
 
 #############################################################################
 
-def stations_ratio_bike(name):
-    return("to_do")
+def stations_ratio_bike():
+    print(" this program needs a capture of the data from your city, if you change the city you need to launch the worker program before")
+    db =testWriteInDb.get_database("vélib")
+    collection= db["capture"]
+    all_station= collection.find()
+    list_Of_All_Station = []
+    for x in all_station:
+        the_station_already_in_the_list= False
+        for station in list_Of_All_Station:
+            if station[0]==x['nom']:
+                station.append((x['velos_dispo']*100)/x['places_dispo'])
+                the_station_already_in_the_list= True
+        if the_station_already_in_the_list==False:
+            new_station = []
+            new_station.append(x['nom'])
+            new_station.append((x['velos_dispo']*100)/x['places_dispo'])
+            list_Of_All_Station.append(new_station)
+    list_station_average= average(list_Of_All_Station)
+    for station in list_station_average:
+        if station[1]<0.20:
+            print("La station "+station[0]+" a un ratio velo/nombre de places moyen sur la capture en dessous de 0.2 avec "+station[1])
+    return(0)
 
 
 ######################################################################
+
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     print("Hello, welcome to our Business program.\n")  
