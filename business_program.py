@@ -38,7 +38,7 @@ def update_station(name,city):
         new_data = testWriteInDb.get_vlille()
         for x in new_data:
             if x["fields"]["nom"] == name: 
-                number_of_available_places = x["fields"]["nbplacesdispo"]
+                number_of_available_places = x["fields"]["nbplacesdispo"]-x["fields"]["nbvelosdispo"]
                 number_of_bikes_availables = x["fields"]["nbvelosdispo"]
                 etat=x["fields"]["etat"]
                 new_values1 = {"$set": {'places_dispo': number_of_available_places}}
@@ -51,7 +51,7 @@ def update_station(name,city):
         new_data = testWriteInDb.get_vrennes()
         for x in new_data:
             if x["fields"]["nom"] == name: 
-                number_of_available_places = x["fields"]["nbplacesdispo"]
+                number_of_available_places = x["fields"]["nombreemplacementsdisponibles"]
                 number_of_bikes_availables = x["fields"]["nbvelosdispo"]
                 etat=x["fields"]["etat"]
                 new_values1 = {"$set": {'places_dispo': number_of_available_places}}
@@ -64,8 +64,8 @@ def update_station(name,city):
         new_data = testWriteInDb.get_vparis()
         for x in new_data:
             if x["fields"]["name"] == name: 
-                number_of_available_places = x["fields"]["nbplacesdispo"]
-                number_of_bikes_availables = x["fields"]["nbvelosdispo"]
+                number_of_available_places = x["fields"]["numdocksavailable"]
+                number_of_bikes_availables = x["fields"]["numbikesavailable"]
                 etat=x["fields"]["is_renting"]
                 new_values1 = {"$set": {'places_dispo': number_of_available_places}}
                 new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
@@ -74,7 +74,18 @@ def update_station(name,city):
                 collection.update_one({'nom': name}, new_values2)
                 collection.update_one({'nom': name}, new_values3)
     if city =="Lyon":
-        print("to be done")
+        new_data = testWriteInDb.get_vlyon()
+        for x in new_data:
+            if x["name"] == name: 
+                number_of_available_places = x["empty_slots"]
+                number_of_bikes_availables = x["free_bikes"]
+                etat=x["extra"]["status"]
+                new_values1 = {"$set": {'places_dispo': number_of_available_places}}
+                new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
+                new_values3= {"$set": {'etat': etat}}
+                collection.update_one({'nom': name}, new_values1)
+                collection.update_one({'nom': name}, new_values2)
+                collection.update_one({'nom': name}, new_values3)
     return("done")
 
 #############################################################################

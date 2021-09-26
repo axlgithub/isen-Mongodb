@@ -56,7 +56,8 @@ def get_vlyon():
     url="http://api.citybik.es/v2/networks/velov"
     response = requests.request("GET", url)
     response_json = json.loads(response.text.encode('utf8'))
-    return response_json.get("stations",[])
+    data=response_json.get("network",[])
+    return (data["stations"])
 
 ######################################################################
 
@@ -104,7 +105,7 @@ def db_create_lille():
         collection_name.insert_one(Station(x["recordid"],
         x["fields"]["etat"],
         x["fields"]["nbvelosdispo"],
-        x["fields"]["nbplacesdispo"],
+        x["fields"]["nbplacesdispo"]-x["fields"]["nbvelosdispo"],
         x["fields"]["nom"],
         x["fields"]["localisation"][0],
         x["fields"]["localisation"][1]).__dict__
@@ -126,8 +127,8 @@ def db_create_rennes():
     for x in vrennes_list:
         collection_name.insert_one(Station(x["recordid"],
         x["fields"]["etat"],
+        x["fields"]["nombrevelosdisponibles"],
         x["fields"]["nombreemplacementsdisponibles"],
-        x["fields"]["nombreemplacementsactuels"],
         x["fields"]["nom"],
         x["fields"]["coordonnees"][0],
         x["fields"]["coordonnees"][1]).__dict__
@@ -145,7 +146,16 @@ def db_create_lyon():
     vlyon_list=get_vlyon()
     dbname=get_database("vélib")
     collection_name=dbname["Lyon"]
-    print(vlyon_list)
+    for x in vlyon_list:
+        collection_name.insert_one(Station(x["id"],
+        x["extra"]["status"],
+        x["free_bikes"],
+        x["empty_slots"],
+        x["name"],
+        x["latitude"],
+        x["longitude"]).__dict__
+        )
+    return()
 
 
 #########################################################################
@@ -160,8 +170,8 @@ def db_create_paris():
     for x in vparis_list:
         collection_name.insert_one(Station(x["recordid"],
         x["fields"]["is_renting"],
-        x["fields"]["numdocksavailable"],
         x["fields"]["numbikesavailable"],
+        x["fields"]["numdocksavailable"],
         x["fields"]["name"],
         x["fields"]["coordonnees_geo"][0],
         x["fields"]["coordonnees_geo"][1]).__dict__
@@ -203,7 +213,7 @@ def update(city):
         collection = dbname["Lille"]
         for x in new_data:
             name_of_the_station = x["fields"]["nom"]
-            number_of_available_places = x["fields"]["nbplacesdispo"]
+            number_of_available_places = x["fields"]["nbplacesdispo"]-x["fields"]["nbvelosdispo"]
             number_of_bikes_availables = x["fields"]["nbvelosdispo"]
             etat=x["fields"]["etat"]
             new_values1 = {"$set": {'places_dispo': number_of_available_places}}
@@ -214,7 +224,21 @@ def update(city):
             collection.update_one({'nom': name_of_the_station}, new_values2)
             collection.update_one({'nom': name_of_the_station}, new_values3)
     if city == "Lyon":
-        print("not available for this city for the moment")
+        new_data = get_vlyon()
+        dbname=get_database("vélib")
+        collection = dbname["Lyon"]
+        for x in new_data:
+            name_of_the_station = x["name"]
+            number_of_available_places = x["empty_slots"]
+            number_of_bikes_availables = x["free_bikes"]
+            etat=x["extra"]["status"]
+            new_values1 = {"$set": {'places_dispo': number_of_available_places}}
+            new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
+            new_values3 = {"$set": {'etat': etat}}
+            print(name_of_the_station)
+            collection.update_one({'nom': name_of_the_station}, new_values1)
+            collection.update_one({'nom': name_of_the_station}, new_values2)
+            collection.update_one({'nom': name_of_the_station}, new_values3)
     if city == "Rennes":
         new_data = get_vrennes()
         dbname=get_database("vélib")
@@ -222,7 +246,7 @@ def update(city):
         for x in new_data:
             name_of_the_station = x["fields"]["nom"]
             number_of_available_places = x["fields"]["nombreemplacementsdisponibles"]
-            number_of_bikes_availables = x["fields"]["nombreemplacementsactuels"]
+            number_of_bikes_availables = x["fields"]["nombrevelosdisponibles"]
             etat=x["fields"]["etat"]
             new_values1 = {"$set": {'places_dispo': number_of_available_places}}
             new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
@@ -252,14 +276,12 @@ def capture(city):
             i=int(time.time())
             collection.insert_one(Station(x["recordid"]+str(i),
             x["fields"]["is_renting"],
-            x["fields"]["numdocksavailable"],
             x["fields"]["numbikesavailable"],
+            x["fields"]["numdocksavailable"],
             x["fields"]["name"],
             x["fields"]["coordonnees_geo"][0],
             x["fields"]["coordonnees_geo"][1]).__dict__
         )
-           
-            
     if city == "Lille":
         new_data = get_vlille()
         dbname=get_database("vélib")
@@ -269,16 +291,25 @@ def capture(city):
             collection.insert_one(Station(x["recordid"]+str(i),
             x["fields"]["etat"],
             x["fields"]["nbvelosdispo"],
-            x["fields"]["nbplacesdispo"],
+            x["fields"]["nbplacesdispo"]-x["fields"]["nbvelosdispo"],
             x["fields"]["nom"],
             x["fields"]["localisation"][0],
             x["fields"]["localisation"][1]).__dict__
         )
-            
-            
     if city == "Lyon":
-        print("not available for this city for the moment")
-
+        new_data = get_vlyon()
+        dbname=get_database("vélib")
+        collection = dbname["capture"]
+        for x in new_data:
+            i=int(time.time())
+            collection.insert_one(Station(x["id"]+str(i),
+            x["extra"]["status"],
+            x["free_bikes"],
+            x["empty_slots"],
+            x["name"],
+            x["latitude"],
+            x["longitude"]).__dict__
+            )
     if city == "Rennes":
         new_data = get_vrennes()
         dbname=get_database("vélib")
@@ -287,8 +318,8 @@ def capture(city):
             i=int(time.time())
             collection.insert_one(Station(x["recordid"]+str(i),
             x["fields"]["etat"],
+            x["fields"]["nombrevelosdisponibles"],
             x["fields"]["nombreemplacementsdisponibles"],
-            x["fields"]["nombreemplacementsactuels"],
             x["fields"]["nom"],
             x["fields"]["coordonnees"][0],
             x["fields"]["coordonnees"][1]).__dict__
@@ -329,7 +360,7 @@ def clear(collection_name):
 
     
 if __name__ == "__main__": 
-    db_create_paris()
+    db_create_lyon()
 
 """
 dbname=get_database("vélib")
