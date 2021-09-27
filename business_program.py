@@ -1,7 +1,7 @@
 from Station import Station
 import user_program 
 import os
-import testWriteInDb
+import usefull_functions
 from pprint import pprint 
 
 #############################################################################
@@ -11,7 +11,7 @@ from pprint import pprint
 #############################################################################
 
 def find_station(city):
-    db =testWriteInDb.get_database("vélib")
+    db =usefull_functions.testWriteInDb.get_database("vélib")
     collection= db[city]
     string_to_search=input("\nplease entre the name or partial name you want to search: ")
     string_to_search= string_to_search.upper()
@@ -22,74 +22,6 @@ def find_station(city):
     return(a)
 
 
-######################################################################
-
-#############################################################################
-
-###        update_station                                              ######
-
-#############################################################################
-
-def update_station(name,city):
-    db =testWriteInDb.get_database("vélib")
-    collection= db[city]
-    if city =="Lille":
-        new_data = testWriteInDb.get_vlille()
-        for x in new_data:
-            if x["fields"]["nom"] == name: 
-                number_of_available_places = x["fields"]["nbplacesdispo"]-x["fields"]["nbvelosdispo"]
-                number_of_bikes_availables = x["fields"]["nbvelosdispo"]
-                etat=x["fields"]["etat"]
-                new_values1 = {"$set": {'places_dispo': number_of_available_places}}
-                new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
-                new_values3= {"$set": {'etat': etat}}
-                collection.update_one({'nom': name}, new_values1)
-                collection.update_one({'nom': name}, new_values2)
-                collection.update_one({'nom': name}, new_values3)
-                return(0)
-    if city =="Rennes":
-        new_data = testWriteInDb.get_vrennes()
-        for x in new_data:
-            if x["fields"]["nom"] == name: 
-                number_of_available_places = x["fields"]["nombreemplacementsdisponibles"]
-                number_of_bikes_availables = x["fields"]["nbvelosdispo"]
-                etat=x["fields"]["etat"]
-                new_values1 = {"$set": {'places_dispo': number_of_available_places}}
-                new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
-                new_values3= {"$set": {'etat': etat}}
-                collection.update_one({'nom': name}, new_values1)
-                collection.update_one({'nom': name}, new_values2)
-                collection.update_one({'nom': name}, new_values3)
-                return(0)
-    if city =="Paris":
-        new_data = testWriteInDb.get_vparis()
-        for x in new_data:
-            if x["fields"]["name"] == name: 
-                number_of_available_places = x["fields"]["numdocksavailable"]
-                number_of_bikes_availables = x["fields"]["numbikesavailable"]
-                etat=x["fields"]["is_renting"]
-                new_values1 = {"$set": {'places_dispo': number_of_available_places}}
-                new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
-                new_values3= {"$set": {'etat': etat}}
-                collection.update_one({'nom': name}, new_values1)
-                collection.update_one({'nom': name}, new_values2)
-                collection.update_one({'nom': name}, new_values3)
-                return(0)
-    if city =="Lyon":
-        new_data = testWriteInDb.get_vlyon()
-        for x in new_data:
-            if x["name"] == name: 
-                number_of_available_places = x["empty_slots"]
-                number_of_bikes_availables = x["free_bikes"]
-                etat=x["extra"]["status"]
-                new_values1 = {"$set": {'places_dispo': number_of_available_places}}
-                new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
-                new_values3= {"$set": {'etat': etat}}
-                collection.update_one({'nom': name}, new_values1)
-                collection.update_one({'nom': name}, new_values2)
-                collection.update_one({'nom': name}, new_values3)
-    return("done")
-
 #############################################################################
 
 ###        update_station                                              ######
@@ -97,7 +29,7 @@ def update_station(name,city):
 #############################################################################
 
 def delete_station(name,city):
-    db =testWriteInDb.get_database("vélib")
+    db =usefull_functions.get_database("vélib")
     collection= db[city]
     query={"nom": name}
     collection.delete_one(query)
@@ -115,7 +47,7 @@ def delete_station(name,city):
 
 def desactivate_all_stations_in_area(city, center_of_desactivation, max_distance):
     list_of_stations_to_desactivate = []
-    db =testWriteInDb.get_database("vélib")
+    db =usefull_functions.get_database("vélib")
     collection= db[city]
     collection.create_index([('coordonnees',"2d")])
     a = collection.find(
@@ -158,11 +90,6 @@ def average(a_list_of_stations):
     return(new_list)
 
 
-######################################################################
-
-
-
-
 #############################################################################
 
 ###        find and display a station                                  ######
@@ -171,7 +98,7 @@ def average(a_list_of_stations):
 
 def stations_ratio_bike():
     print(" this program needs a capture of the data from your city, if you change the city you need to launch the worker program before")
-    db =testWriteInDb.get_database("vélib")
+    db =usefull_functions.get_database("vélib")
     collection= db["capture"]
     all_station= collection.find()
     list_Of_All_Station = []
@@ -221,7 +148,7 @@ if __name__ == "__main__":
     if user_choice=="3":
         station=input("\nPlease enter the name of the station you want to update: ")
         station= station.upper()
-        update_station(station,city)
+        usefull_functions.update_station(station,city)
     if user_choice =="4":
         tab = 2*[0]
         print("please enter the longitude and latitude of the center point of desactivation: ")

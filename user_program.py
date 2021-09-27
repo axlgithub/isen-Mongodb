@@ -1,61 +1,6 @@
-import testWriteInDb
+import usefull_functions
 import os 
-from bson.son import SON
 from pymongo import MongoClient
-from pprint import pprint 
-
-
-
-
-#############################################################################
-
-###          choice of the city                                         ######
-
-#############################################################################
-
-
-def choice(i):
-    user_choice = i
-    if (user_choice == "1"):
-        return ("paris")
-    if (user_choice == "2"):
-        return ("lille")
-    if (user_choice == "3"):
-        return ("lyon")
-    if (user_choice == "4"):
-        return ("rennes")
-    user_choice = user_choice.lower()
-    return(user_choice)
-
-##############################################################################
-
-
-
-
-
-#############################################################################
-
-### first_launch_from_user first message and interactions with the user #####
-
-#############################################################################
-
-def first_launch_from_user():
-    while True:
-        print("enter the name of the city or one of the number shown bellow\n ")
-        print("1.Paris 2.Lille 3.Lyon 4;Rennes\n")
-        user_choice = input(":")
-        city_of_user= choice(user_choice)
-        if ( city_of_user == "lille" or city_of_user == "lyon" or city_of_user == "paris" or city_of_user == "rennes"):
-            break
-        print("please enter a correct city or number")
-    return (city_of_user.capitalize())
-
-##############################################################################
-
-
-
-
-
 
 
 #############################################################################
@@ -105,9 +50,9 @@ def get_closest_location(collection, location_of_user):
 
 
 if __name__ == "__main__": 
-    db =testWriteInDb.get_database("vélib")
+    db =usefull_functions.get_database("vélib")
     print("Hello, welcome to our velib application. In which city do you want to make a research ? \n")
-    city_of_user = first_launch_from_user()
+    city_of_user = usefull_functions.first_launch_from_user()
     collection= db[city_of_user]
    
     os.system("clear")

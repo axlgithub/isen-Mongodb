@@ -1,13 +1,6 @@
-import testWriteInDb
+import usefull_functions
 import os 
-from bson.son import SON
-from pymongo import MongoClient
 import time
-import testWriteInDb
-import user_program
-
-
-
 
 
 #############################################################################
@@ -18,21 +11,11 @@ import user_program
 
 
 def capture_and_update_data_of_city(city):
-    testWriteInDb.capture(city)
-    testWriteInDb.update(city)
+    usefull_functions.capture(city)
+    usefull_functions.update(city)
     print("ok")
 
     
-
-##############################################################################
-
-
-
-
-
-
-
-
 #############################################################################
 
 ###          run timed loop                                            ######
@@ -43,7 +26,7 @@ def capture_and_update_data_of_city(city):
 def timed_worker(time_in_seconds,city):
     t=0
     initial_time=time.time()
-    testWriteInDb.clear("capture")
+    usefull_functions.clear("capture")
     while (t<time_in_seconds):
         one_minute_chrono = time.time()
         capture_and_update_data_of_city(city)
@@ -58,7 +41,7 @@ def timed_worker(time_in_seconds,city):
 
 if __name__ == "__main__": 
     print("Hello, welcome to our worker program.\n")
-    city = user_program.first_launch_from_user()
+    city = usefull_functions.first_launch_from_user()
     os.system("clear")
     print("Welcome to our worker program for the city of",city)
     timed_worker(3600,city)
