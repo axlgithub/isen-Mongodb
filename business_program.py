@@ -11,7 +11,7 @@ from pprint import pprint
 #############################################################################
 
 def find_station(city):
-    db =usefull_functions.testWriteInDb.get_database("vélib")
+    db =usefull_functions.get_database("vélib")
     collection= db[city]
     string_to_search=input("\nplease entre the name or partial name you want to search: ")
     string_to_search= string_to_search.upper()
@@ -133,7 +133,7 @@ def stations_ratio_bike():
 
 if __name__ == "__main__":
     print("Hello, welcome to our Business program.\n")  
-    city = user_program.first_launch_from_user()
+    city = usefull_functions.first_launch_from_user()
     os.system("clear")
     print("Welcome to our worker program for the city of",city)
     print("\nWhich action do you want to do ?\nPLEASE SELECT A NUMBER\n")

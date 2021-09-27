@@ -159,6 +159,79 @@ def update_station(name,city):
 
 #############################################################################
 
+###        update                                                      ######
+
+#############################################################################
+
+def update(city):
+    if city == "Paris":
+        new_data = get_self_services_bicycle.get_vparis()
+        dbname=get_database("vélib")
+        collection = dbname["Paris"]
+        for x in new_data:
+            name_of_the_station = x["fields"]["name"]
+            number_of_available_places = x["fields"]["numdocksavailable"]
+            number_of_bikes_availables = x["fields"]["numbikesavailable"]
+            etat=x["fields"]["is_renting"]
+            new_values1 = {"$set": {'places_dispo': number_of_available_places}}
+            new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
+            new_values3 = {"$set": {'etat': etat}}
+            print(name_of_the_station)
+            collection.update_one({'nom': name_of_the_station}, new_values1)
+            collection.update_one({'nom': name_of_the_station}, new_values2)
+            collection.update_one({'nom': name_of_the_station}, new_values3)
+    if city == "Lille":
+        new_data = get_self_services_bicycle.get_vlille()
+        dbname=get_database("vélib")
+        collection = dbname["Lille"]
+        for x in new_data:
+            name_of_the_station = x["fields"]["nom"]
+            number_of_available_places = x["fields"]["nbplacesdispo"]-x["fields"]["nbvelosdispo"]
+            number_of_bikes_availables = x["fields"]["nbvelosdispo"]
+            etat=x["fields"]["etat"]
+            new_values1 = {"$set": {'places_dispo': number_of_available_places}}
+            new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
+            new_values3={"$set": {'etat': etat}}
+            print(name_of_the_station)
+            collection.update_one({'nom': name_of_the_station}, new_values1)
+            collection.update_one({'nom': name_of_the_station}, new_values2)
+            collection.update_one({'nom': name_of_the_station}, new_values3)
+    if city == "Lyon":
+        new_data = get_self_services_bicycle.get_vlyon()
+        dbname=get_database("vélib")
+        collection = dbname["Lyon"]
+        for x in new_data:
+            name_of_the_station = x["name"]
+            number_of_available_places = x["empty_slots"]
+            number_of_bikes_availables = x["free_bikes"]
+            etat=x["extra"]["status"]
+            new_values1 = {"$set": {'places_dispo': number_of_available_places}}
+            new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
+            new_values3 = {"$set": {'etat': etat}}
+            print(name_of_the_station)
+            collection.update_one({'nom': name_of_the_station}, new_values1)
+            collection.update_one({'nom': name_of_the_station}, new_values2)
+            collection.update_one({'nom': name_of_the_station}, new_values3)
+    if city == "Rennes":
+        new_data = get_self_services_bicycle.get_vrennes()
+        dbname=get_database("vélib")
+        collection = dbname["Rennes"]
+        for x in new_data:
+            name_of_the_station = x["fields"]["nom"]
+            number_of_available_places = x["fields"]["nombreemplacementsdisponibles"]
+            number_of_bikes_availables = x["fields"]["nombrevelosdisponibles"]
+            etat=x["fields"]["etat"]
+            new_values1 = {"$set": {'places_dispo': number_of_available_places}}
+            new_values2 = {"$set": {'velos_dispo': number_of_bikes_availables}}
+            new_values3={"$set": {'etat': etat}}
+            print(name_of_the_station)
+            collection.update_one({'nom': name_of_the_station}, new_values1)
+            collection.update_one({'nom': name_of_the_station}, new_values2)
+            collection.update_one({'nom': name_of_the_station}, new_values3)
+         
+
+#############################################################################
+
 ###        clear                                                       ######
 
 #############################################################################
