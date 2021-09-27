@@ -33,7 +33,6 @@ def find_station(city):
 def update_station(name,city):
     db =testWriteInDb.get_database("vélib")
     collection= db[city]
-    query={"nom": name}
     if city =="Lille":
         new_data = testWriteInDb.get_vlille()
         for x in new_data:
@@ -47,6 +46,7 @@ def update_station(name,city):
                 collection.update_one({'nom': name}, new_values1)
                 collection.update_one({'nom': name}, new_values2)
                 collection.update_one({'nom': name}, new_values3)
+                return(0)
     if city =="Rennes":
         new_data = testWriteInDb.get_vrennes()
         for x in new_data:
@@ -60,6 +60,7 @@ def update_station(name,city):
                 collection.update_one({'nom': name}, new_values1)
                 collection.update_one({'nom': name}, new_values2)
                 collection.update_one({'nom': name}, new_values3)
+                return(0)
     if city =="Paris":
         new_data = testWriteInDb.get_vparis()
         for x in new_data:
@@ -73,6 +74,7 @@ def update_station(name,city):
                 collection.update_one({'nom': name}, new_values1)
                 collection.update_one({'nom': name}, new_values2)
                 collection.update_one({'nom': name}, new_values3)
+                return(0)
     if city =="Lyon":
         new_data = testWriteInDb.get_vlyon()
         for x in new_data:
@@ -111,9 +113,22 @@ def delete_station(name,city):
 
 #############################################################################
 
-def desactivate_all_stations_in_area(city):
-   
-    return("to_do")
+def desactivate_all_stations_in_area(city, center_of_desactivation, max_distance):
+    list_of_stations_to_desactivate = []
+    db =testWriteInDb.get_database("vélib")
+    collection= db[city]
+    collection.create_index([('coordonnees',"2d")])
+    a = collection.find(
+        {'coordonnees': {'$near': center_of_desactivation, '$maxDistance': max_distance }}
+    ) 
+    for data in a:
+        print("the station "+ data['nom']+" will be desactivated")
+        list_of_stations_to_desactivate.append(data['nom'])
+
+    for name in list_of_stations_to_desactivate:
+        new_values = {"$set": {'etat': "Hors service"}}
+        collection.update_one({'nom': name}, new_values)
+    return(0)
 
 
 ######################################################################
@@ -194,7 +209,7 @@ if __name__ == "__main__":
     city = user_program.first_launch_from_user()
     os.system("clear")
     print("Welcome to our worker program for the city of",city)
-    print("\nWhich action do you want to do ?\n")
+    print("\nWhich action do you want to do ?\nPLEASE SELECT A NUMBER\n")
     print("\nEnter 1. Find a station from its name\n2. Delete a station\n3. Update a station \n4. Desactivate all the sations in an area\n5. Give all sations with ratio bike under 20%\n")
     user_choice = input("your choice: ")
     if user_choice =="1":
@@ -208,7 +223,14 @@ if __name__ == "__main__":
         station= station.upper()
         update_station(station,city)
     if user_choice =="4":
-        desactivate_all_stations_in_area()
+        tab = 2*[0]
+        print("please enter the longitude and latitude of the center point of desactivation: ")
+        user_longitude = float(input("\nplease enter your longitude: "))
+        user_latitude = float(input("\nplease enter your latitude: "))
+        tab[0]=user_longitude
+        tab[1]=user_latitude
+        user_max_distance = float(input("\nplease enter the distance of the perimeter you want to desactivate (in coordinates): "))
+        desactivate_all_stations_in_area(city, tab,user_max_distance)
     if user_choice =="5":
         stations_ratio_bike()
     
