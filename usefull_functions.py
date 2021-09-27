@@ -97,7 +97,7 @@ def capture(city):   # capture is usefull to the worker program to store the dat
 #############################################################################
 
 def update_station(name,city):
-    db =get_self_services_bicycle.get_database("vélib")
+    db =get_database("vélib")
     collection= db[city]
     if city =="Lille":
         new_data = get_self_services_bicycle.get_vlille()
