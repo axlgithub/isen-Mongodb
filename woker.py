@@ -44,5 +44,6 @@ if __name__ == "__main__":
     city = usefull_functions.first_launch_from_user()
     os.system("clear")
     print("Welcome to our worker program for the city of",city)
+    print("\nThis program will take some time, please wait, if you think you have enough data you can stop it with the keyboard\n")
     timed_worker(3600,city)
     

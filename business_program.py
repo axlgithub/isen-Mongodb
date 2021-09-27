@@ -116,7 +116,7 @@ def stations_ratio_bike():
     list_station_average= average(list_Of_All_Station)
     for station in list_station_average:
         if station[1]<0.20:
-            print("La station "+station[0]+" a un ratio velo/nombre de places moyen sur la capture en dessous de 0.2 avec "+station[1])
+            print("La station "+station[0]+" a un ratio velo/nombre de places moyen sur la capture en dessous de 0.2 avec "+str(station[1]))
     return(0)
 
 

@@ -32,6 +32,8 @@ def get_user_location():
 def get_closest_location(collection, location_of_user):
     max_distance= 0.01
     collection.create_index([('coordonnees',"2d")])
+
+    # Si l'on souhaite ne plus avoir seulement la station la plus proche il suffit de modifier le find_one en find 
     a = collection.find_one(
         {'coordonnees': {'$near': location_of_user, '$maxDistance': max_distance }}
     ) 
