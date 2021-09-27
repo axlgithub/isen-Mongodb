@@ -75,7 +75,7 @@ def desactivate_all_stations_in_area(city, center_of_desactivation, max_distance
 
 #############################################################################
 
-def average(a_list_of_stations):
+def average(a_list_of_stations): #usefull to make the average of the ratio (available bikes/size of the station) for each stations
     new_list = []
     for x in a_list_of_stations:
         size=len(x)
@@ -156,7 +156,7 @@ if __name__ == "__main__":
         user_latitude = float(input("\nplease enter your latitude: "))
         tab[0]=user_longitude
         tab[1]=user_latitude
-        user_max_distance = float(input("\nplease enter the distance of the perimeter you want to desactivate (in coordinates): "))
+        user_max_distance = float(input("\nplease enter the distance of the perimeter you want to desactivate (in coordinates not meters): "))
         desactivate_all_stations_in_area(city, tab,user_max_distance)
     if user_choice =="5":
         stations_ratio_bike()

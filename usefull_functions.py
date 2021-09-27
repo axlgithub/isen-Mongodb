@@ -12,7 +12,7 @@ from pymongo import MongoClient
 #############################################################################
 
 def get_database(name_of_data_base):
-    #Get the password and the username in a file next to this python script 
+    #Get the password and the username in a file next to this python script. The first line must be the password, the second one the username 
     pwd_file = open('credentials','r')
     pwd=(pwd_file.readline()).strip("\n")
     username=(pwd_file.readline()).strip("\n")
@@ -32,7 +32,7 @@ def get_database(name_of_data_base):
 
 #############################################################################
 
-def capture(city):
+def capture(city):   # capture is usefull to the worker program to store the data in the capture collection each minutes
     if city == "Paris":
         new_data = get_self_services_bicycle.get_vparis()
         dbname=get_database("vélib")
